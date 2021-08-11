@@ -1,51 +1,11 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart' as http;
 
-Future<List<Photo>> fetchPhotos(http.Client client) async {
-  final response = await client
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/photos'));
-
-  // Use the compute function to run parsePhotos in a separate isolate.
-  return compute(parsePhotos, response.body);
-}
-
-// A function that converts a response body into a List<Photo>.
-List<Photo> parsePhotos(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
-  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
-}
-
-class Photo {
-  final int albumId;
-  final int id;
-  final String title;
-  final String url;
-  final String thumbnailUrl;
-
-  const Photo({
-    required this.albumId,
-    required this.id,
-    required this.title,
-    required this.url,
-    required this.thumbnailUrl,
-  });
-
-  factory Photo.fromJson(Map<String, dynamic> json) {
-    return Photo(
-      albumId: json['albumId'] as int,
-      id: json['id'] as int,
-      title: json['title'] as String,
-      url: json['url'] as String,
-      thumbnailUrl: json['thumbnailUrl'] as String,
-    );
-  }
-}
+import 'package:flutter_json_parsing/method.dart';
+import 'package:flutter_json_parsing/photo.dart';
 
 void main() => runApp(const MyApp());
 
@@ -54,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'Isolate Demo';
+    const appTitle = 'JSON PHOTO';
 
     return const MaterialApp(
       title: appTitle,
@@ -103,7 +63,7 @@ class PhotosList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+        crossAxisCount: 5,
       ),
       itemCount: photos.length,
       itemBuilder: (context, index) {
@@ -111,12 +71,15 @@ class PhotosList extends StatelessWidget {
         return Container(
           child: Column(
             children: <Widget> [
-              Text("albumId: ${photo.albumId} / ID: ${photo.id.toString()}"),
-              Image.network(photos[index].thumbnailUrl)
+              Text("ID: ${photo.id.toString()}"),
+              Image.network(
+                photos[index].thumbnailUrl,
+                height: 50,
+                fit: BoxFit.fill,
+              )
             ],
           ),
         );
-
       },
     );
   }
