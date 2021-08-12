@@ -63,7 +63,7 @@ class PhotosList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 5,
+        crossAxisCount: 1,
       ),
       itemCount: photos.length,
       itemBuilder: (context, index) {
@@ -71,11 +71,12 @@ class PhotosList extends StatelessWidget {
         return Container(
           child: Column(
             children: <Widget> [
-              Text("ID: ${photo.id.toString()}"),
+              SizedBox(height: 20,),
+              Text("album ID: ${photo.albumId}"),
+              Text("ID: ${photo.id}"),
+              Text("url: ${photo.url}"),
               Image.network(
                 photos[index].thumbnailUrl,
-                height: 50,
-                fit: BoxFit.fill,
               )
             ],
           ),
